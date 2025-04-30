@@ -6,54 +6,97 @@ import { headers } from "next/headers";
 import { redirect } from "next/navigation";
 
 export const signUpAction = async (formData: FormData) => {
-  const email = formData.get("email")?.toString();
-  const password = formData.get("password")?.toString();
-  const supabase = await createClient();
-  const origin = (await headers()).get("origin");
+    const phone = formData.get("phone")?.toString();
+    const supabase = await createClient();
+    if (!phone) {
+        return encodedRedirect("error", "/sign-up", "Correo y telefono son necesarios");
+    }
+    const { data, error } = await supabase.auth.signInWithOtp({ phone });
 
-  if (!email || !password) {
-    return encodedRedirect(
-      "error",
-      "/sign-up",
-      "Email and password are required",
-    );
-  }
+    if (error) {
+        console.error(error.code + " " + error.message);
+        return encodedRedirect("error", "/sign-up", error.message);
+    } else {
+        //   return encodedRedirect("success", "/sign-up", "Código enviado!");
+        return { data, error };
+    }
+};
 
-  const { error } = await supabase.auth.signUp({
-    email,
-    password,
-    options: {
-      emailRedirectTo: `${origin}/auth/callback`,
-    },
-  });
+export const handleVerifyCode = async (formData: FormData) => {
+    console.log("VerificationForm: ", formData);
+    const email = formData.get("email")?.toString();
+    const phone = formData.get("phone")?.toString();
+    const code = formData.get("code")?.toString();
+    const name = formData.get("name")?.toString();
+    const lastName = formData.get("lastName")?.toString();
+    const docId = formData.get("docId")?.toString();
+    const supabase = await createClient();
 
-  if (error) {
-    console.error(error.code + " " + error.message);
-    return encodedRedirect("error", "/sign-up", error.message);
-  } else {
-    return encodedRedirect(
-      "success",
-      "/sign-up",
-      "Thanks for signing up! Please check your email for a verification link.",
-    );
-  }
+    if (!code || !phone || !email) return;
+
+    const { error } = await supabase.auth.verifyOtp({
+        phone,
+        token: code,
+        type: "sms",
+    });
+
+    if (error) {
+        console.error("Error verifying OTP:", error.message);
+        return;
+    } else {
+        const { error: updateError } = await supabase.auth.updateUser({
+            data: { name, lastName, docId, email },
+        });
+        const { data, error: sessionError } = await supabase.auth.getUser();
+        if (!data?.user?.id) return;
+        addUserInfo(data.user.id, formData);
+        if (updateError) {
+            console.error(updateError.code + " " + updateError.message);
+            return encodedRedirect("error", "/sign-up", updateError.message);
+        }
+    }
+    return redirect("/protected");
+};
+
+export const addUserInfo = async (
+    uid: string,
+    formData: FormData
+): Promise<{ success: boolean }> => {
+    try {
+        const supabase = await createClient();
+        const name = formData.get("name")?.toString();
+        const lastName = formData.get("lastName")?.toString();
+        const docId = formData.get("docId")?.toString();
+        const email = formData.get("email")?.toString();
+        const location = formData;
+        const { error: profileError } = await supabase
+            .from("patient")
+            .insert([{ id: uid, name, location, email, lastName, docId }]);
+        if (profileError) throw profileError;
+        return { success: true };
+    } catch {
+        return { success: false };
+    }
 };
 
 export const signInAction = async (formData: FormData) => {
-  const email = formData.get("email") as string;
-  const password = formData.get("password") as string;
-  const supabase = await createClient();
+    const phone = formData.get("phone")?.toString();
+    const code = formData.get("code")?.toString();
+    const supabase = await createClient();
 
-  const { error } = await supabase.auth.signInWithPassword({
-    email,
-    password,
-  });
+    if (!code || !phone) return;
 
-  if (error) {
-    return encodedRedirect("error", "/sign-in", error.message);
-  }
+    const { error } = await supabase.auth.verifyOtp({
+        phone,
+        token: code,
+        type: "sms",
+    });
 
-  return redirect("/protected");
+    if (error) {
+        return encodedRedirect("error", "/sign-in", error.message);
+    }
+
+    return redirect("/protected");
 };
 
 export const forgotPasswordAction = async (formData: FormData) => {
