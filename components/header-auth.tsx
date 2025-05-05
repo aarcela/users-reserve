@@ -61,13 +61,9 @@ export default async function AuthButton() {
             ) : (
                 <span> Completa tus datos</span>
             )}
-            {user!.user_metadata?.is_admin ? (
+            {user!.user_metadata?.is_admin && (
                 <Button asChild size="sm" variant={"outline"}>
                     <Link href="/protected/admin">Admin</Link>
-                </Button>
-            ) : (
-                <Button asChild size="sm" variant={"outline"}>
-                    <Link href="/sign-in">Portal Clientes</Link>
                 </Button>
             )}
             <form action={signOutAction}>
@@ -77,10 +73,15 @@ export default async function AuthButton() {
             </form>
         </div>
     ) : (
-        <div className="flex gap-2">
-            <Button asChild size="sm" variant={"default"}>
-                <Link href="/sign-up">Registrarse</Link>
-            </Button>
-        </div>
+        <>
+            <div className="flex gap-2">
+                <Button asChild size="sm" variant={"outline"}>
+                    <Link href="/sign-in">Portal Clientes</Link>
+                </Button>
+                <Button asChild size="sm" variant={"default"}>
+                    <Link href="/sign-up">Registrarse</Link>
+                </Button>
+            </div>
+        </>
     );
 }
