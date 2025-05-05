@@ -3,7 +3,7 @@ import React, { useEffect, useState } from "react";
 import { Label } from "../ui/label";
 import { Input } from "../ui/input";
 import { SubmitButton } from "../submit-button";
-import { updatePatient } from "@/app/patientService";
+import { updatePatient } from "@/app/services/patientService";
 
 export type Patient = {
     uid: string;
@@ -13,6 +13,7 @@ export type Patient = {
     email?: string;
     phone?: string;
     location?: string;
+    userType?: string;
 };
 
 function Profile({
@@ -23,6 +24,7 @@ function Profile({
     docId = 0,
     email = "",
     location = "",
+    userType = "",
 }: Patient) {
     const [formData, setFormData] = useState({
         name: name || "",
@@ -49,17 +51,21 @@ function Profile({
         <div className="flex-1 flex flex-col min-w-64 w-full">
             <h1 className="text-2xl font-medium mx-auto mb-7">Perfil</h1>
             <Label htmlFor="phone">Telefono</Label>
-            <Input name="phone" defaultValue={"+" + phone} disabled />
+            <Input id="phone" name="phone" defaultValue={"+" + phone} disabled />
+            <Label htmlFor="userType">Tipo</Label>
+            <Input id="userType" name="userType" defaultValue={userType} disabled />
             <form>
                 <div className="flex flex-col gap-2 [&>input]:mb-3 mt-8">
                     <Label htmlFor="name">Nombre</Label>
                     <Input
                         name="name"
+                        id="name"
                         value={formData.name} // Always defined (even if "")
                         onChange={(e) => setFormData({ ...formData, name: e.target.value })}
                     />
                     <Input
                         name="lastName"
+                        id="lastName"
                         value={formData.lastName}
                         onChange={(e) => setFormData({ ...formData, lastName: e.target.value })}
                     />

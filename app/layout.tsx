@@ -44,7 +44,7 @@ export default function RootLayout({
                                     <HeaderAuth />
                                 </div>
                             </nav>
-                            <div className="flex flex-col gap-20 w-full p-5">{children}</div>
+                            <div className="flex-1 flex-col gap-20 w-full p-5">{children}</div>
 
                             <footer className="w-full flex items-center justify-center border-t mx-auto text-center text-xs gap-8 py-16">
                                 <p>Powered by Maombi Lab</p>

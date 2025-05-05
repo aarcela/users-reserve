@@ -22,6 +22,7 @@ async function ProfilPage() {
                 lastName={userData.lastName}
                 docId={userData.docId}
                 email={userData.email}
+                userType={userData.type}
                 phone={user?.phone}
                 location={userData?.location}
             />

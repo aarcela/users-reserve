@@ -21,12 +21,12 @@ function SigninClient() {
         await signInAction(form);
     };
     return (
-        <div className="flex-1 flex flex-col min-w-64 w-full">
-            <h1 className="text-2xl font-medium mx-auto">Ingresar al Portal</h1>
-            <p className="text-sm text-foreground mx-auto">
+        <div className="flex flex-col min-w-64 max-w-64 mx-auto">
+            <h1 className="text-2xl font-medium">Ingresar al Portal</h1>
+            <p className="text-sm text-foreground">
                 No tienes cuenta?{" "}
                 <Link className="text-foreground font-medium underline" href="/sign-up">
-                    Registrate
+                    Regístrate
                 </Link>
             </p>
 

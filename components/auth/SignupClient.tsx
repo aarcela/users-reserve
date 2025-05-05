@@ -4,16 +4,11 @@ import { SubmitButton } from "@/components/submit-button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import Link from "next/link";
-import { handleVerifyCode, signUpAction } from "@/app/actions";
-import { SmtpMessage } from "@/app/(auth-pages)/smtp-message";
+import { handleVerifyCode } from "@/app/actions";
 import SendVerification from "./SendVerification";
 
 const SignupClient: React.FC = () => {
     const [phone, setPhone] = useState<string>("");
-    const [name, setName] = useState<string>("");
-    const [lastName, setLastName] = useState<string>("");
-    const [docId, setDocId] = useState<string>("");
-    const [email, setEmail] = useState<string>("");
     const [codeSent, setCodeSent] = useState(false);
 
     const handleSubmit = async (phone: string, codeSend: boolean) => {
@@ -32,7 +27,7 @@ const SignupClient: React.FC = () => {
             <p className="text-sm text text-foreground">
                 Ya tienes tu cuenta?{" "}
                 <Link className="text-primary font-medium underline" href="/sign-in">
-                    Registro al Portal de Pacientes
+                    Ingresa al Portal de Pacientes
                 </Link>
             </p>{" "}
             {!codeSent ? (
