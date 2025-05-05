@@ -1,7 +1,5 @@
 import { getAppointments } from "@/app/services/appointmentService";
 import AppointmentList from "@/components/appointment/AppointmentList";
-import { createClient } from "@/utils/supabase/server";
-import { useEffect, useState } from "react";
 
 export default async function AdminPage() {
     const data = await getAppointments();
