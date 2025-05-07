@@ -11,10 +11,11 @@ interface Props {
         count: number;
         appointment_type: string;
         patient: any;
+        [key: string]: any;
     }[];
 }
 
-function AppointmentList({ appointmentList }: Props) {
+function AppointmentList({ appointmentList, ...props }: Props) {
     const [appointmentData, setAppointmentData] = useState<any>([]);
 
     useEffect(() => {

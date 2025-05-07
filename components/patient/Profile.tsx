@@ -4,6 +4,7 @@ import { Label } from "../ui/label";
 import { Input } from "../ui/input";
 import { SubmitButton } from "../submit-button";
 import { updatePatient } from "@/app/services/patientService";
+import { toast } from "react-toastify";
 
 export type Patient = {
     uid: string;
@@ -44,16 +45,21 @@ function Profile({
                 email: data.email,
                 location: data.location,
             });
+            toast.success("Información editada correctamente");
+        } else {
+            toast.error("Intente nuevamente");
         }
     };
 
     return (
-        <div className="flex-1 flex flex-col min-w-64 w-full">
+        <div className="flex flex-col min-w-64 max-w-64 mx-auto">
             <h1 className="text-2xl font-medium mx-auto mb-7">Perfil</h1>
-            <Label htmlFor="phone">Telefono</Label>
-            <Input id="phone" name="phone" defaultValue={"+" + phone} disabled />
-            <Label htmlFor="userType">Tipo</Label>
-            <Input id="userType" name="userType" defaultValue={userType} disabled />
+            <div className="flex flex-col gap-2 [&>input]:mb-3 mt-8">
+                <Label htmlFor="phone">Telefono</Label>
+                <Input id="phone" name="phone" defaultValue={"+" + phone} disabled />
+                <Label htmlFor="userType">Tipo</Label>
+                <Input id="userType" name="userType" defaultValue={userType} disabled />
+            </div>
             <form>
                 <div className="flex flex-col gap-2 [&>input]:mb-3 mt-8">
                     <Label htmlFor="name">Nombre</Label>
@@ -63,24 +69,31 @@ function Profile({
                         value={formData.name} // Always defined (even if "")
                         onChange={(e) => setFormData({ ...formData, name: e.target.value })}
                     />
+                    <Label htmlFor="lastName">Apellido</Label>
                     <Input
                         name="lastName"
                         id="lastName"
                         value={formData.lastName}
                         onChange={(e) => setFormData({ ...formData, lastName: e.target.value })}
                     />
+                    <Label htmlFor="docId">Cédula</Label>
                     <Input
                         name="docId"
+                        id="docId"
                         value={formData.docId}
                         onChange={(e) => setFormData({ ...formData, docId: e.target.value })}
                     />
+                    <Label htmlFor="email">Correo</Label>
                     <Input
                         name="email"
+                        id="email"
                         value={formData.email}
                         onChange={(e) => setFormData({ ...formData, email: e.target.value })}
                     />
+                    <Label htmlFor="location">Dirección</Label>
                     <Input
                         name="location"
+                        id="location"
                         value={formData.location}
                         onChange={(e) => setFormData({ ...formData, location: e.target.value })}
                     />
