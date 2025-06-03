@@ -6,97 +6,102 @@ import { headers } from "next/headers";
 import { redirect } from "next/navigation";
 
 export const signUpAction = async (formData: FormData) => {
-    const phone = formData.get("phone")?.toString();
-    const supabase = await createClient();
-    if (!phone) {
-        return encodedRedirect("error", "/sign-up", "Correo y telefono son necesarios");
-    }
-    const { data, error } = await supabase.auth.signInWithOtp({ phone });
+  const phone = formData.get("phone")?.toString();
+  const supabase = await createClient();
+  if (!phone) {
+    return encodedRedirect(
+      "error",
+      "/sign-up",
+      "Correo y telefono son necesarios",
+    );
+  }
+  const { data, error } = await supabase.auth.signInWithOtp({ phone });
 
-    if (error) {
-        console.error(error.code + " " + error.message);
-        return encodedRedirect("error", "/sign-up", error.message);
-    } else {
-        //   return encodedRedirect("success", "/sign-up", "Código enviado!");
-        return { data, error };
-    }
+  if (error) {
+    console.error(error.code + " " + error.message);
+    return encodedRedirect("error", "/sign-up", error.message);
+  } else {
+    //   return encodedRedirect("success", "/sign-up", "Código enviado!");
+    return { data, error };
+  }
 };
 
 export const handleVerifyCode = async (formData: FormData) => {
-    console.log("VerificationForm: ", formData);
-    const email = formData.get("email")?.toString();
-    const phone = formData.get("phone")?.toString();
-    const code = formData.get("code")?.toString();
-    const name = formData.get("name")?.toString();
-    const lastName = formData.get("lastName")?.toString();
-    const docId = formData.get("docId")?.toString();
-    const supabase = await createClient();
+  console.log("VerificationForm: ", formData);
+  const email = formData.get("email")?.toString();
+  const phone = formData.get("phone")?.toString();
+  const code = formData.get("code")?.toString();
+  const name = formData.get("name")?.toString();
+  const lastName = formData.get("lastName")?.toString();
+  const docId = formData.get("docId")?.toString();
+  const supabase = await createClient();
 
-    if (!code || !phone || !email) return;
+  if (!code || !phone || !email) return;
 
-    const { error } = await supabase.auth.verifyOtp({
-        phone,
-        token: code,
-        type: "sms",
+  const { error } = await supabase.auth.verifyOtp({
+    phone,
+    token: code,
+    type: "sms",
+  });
+
+  if (error) {
+    console.error("Error verifying OTP:", error.message);
+    return;
+  } else {
+    const { error: updateError } = await supabase.auth.updateUser({
+      data: { name, lastName, docId, email },
     });
-
-    if (error) {
-        console.error("Error verifying OTP:", error.message);
-        return;
-    } else {
-        const { error: updateError } = await supabase.auth.updateUser({
-            data: { name, lastName, docId, email },
-        });
-        const { data, error: sessionError } = await supabase.auth.getUser();
-        if (!data?.user?.id) return;
-        addUserInfo(data.user.id, formData);
-        if (updateError) {
-            console.error(updateError.code + " " + updateError.message);
-            return encodedRedirect("error", "/sign-up", updateError.message);
-        }
+    const { data, error: sessionError } = await supabase.auth.getUser();
+    if (!data?.user?.id) return;
+    addUserInfo(data.user.id, formData);
+    if (updateError) {
+      console.error(updateError.code + " " + updateError.message);
+      return encodedRedirect("error", "/sign-up", updateError.message);
     }
-    return redirect("/protected");
+  }
+  return redirect("/protected");
 };
 
 export const addUserInfo = async (
-    uid: string,
-    formData: FormData
-): Promise<{ success: boolean }> => {
-    try {
-        const supabase = await createClient();
-        const name = formData.get("name")?.toString();
-        const lastName = formData.get("lastName")?.toString();
-        const docId = formData.get("docId")?.toString();
-        const email = formData.get("email")?.toString();
-        const location = formData;
-        const { error: profileError } = await supabase
-            .from("patient")
-            .insert([{ id: uid, name, location, email, lastName, docId }]);
-        if (profileError) throw profileError;
-        return { success: true };
-    } catch {
-        return { success: false };
-    }
+  uid: string,
+  formData: FormData,
+): Promise<{ success: boolean; data: any }> => {
+  try {
+    const supabase = await createClient();
+    const name = formData.get("name")?.toString();
+    const lastName = formData.get("lastName")?.toString();
+    const docId = formData.get("docId")?.toString();
+    const email = formData.get("email")?.toString();
+    const location = formData.get("location")?.toString();
+    const type = formData.get("userType")?.toString();
+    const { data, error: profileError } = await supabase
+      .from("patient")
+      .insert([{ id: uid, name, location, email, lastName, docId }]);
+    if (profileError) throw profileError;
+    return { success: true, data: data };
+  } catch {
+    return { success: false, data: null };
+  }
 };
 
 export const signInAction = async (formData: FormData) => {
-    const phone = formData.get("phone")?.toString();
-    const code = formData.get("code")?.toString();
-    const supabase = await createClient();
+  const phone = formData.get("phone")?.toString();
+  const code = formData.get("code")?.toString();
+  const supabase = await createClient();
 
-    if (!code || !phone) return;
+  if (!code || !phone) return;
 
-    const { error } = await supabase.auth.verifyOtp({
-        phone,
-        token: code,
-        type: "sms",
-    });
+  const { error } = await supabase.auth.verifyOtp({
+    phone,
+    token: code,
+    type: "sms",
+  });
 
-    if (error) {
-        return encodedRedirect("error", "/sign-in", error.message);
-    }
+  if (error) {
+    return encodedRedirect("error", "/sign-in", error.message);
+  }
 
-    return redirect("/protected");
+  return redirect("/protected");
 };
 
 export const forgotPasswordAction = async (formData: FormData) => {

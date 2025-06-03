@@ -8,54 +8,57 @@ import "./globals.css";
 import { ToastContainer } from "react-toastify";
 
 const defaultUrl = process.env.VERCEL_URL
-    ? `https://${process.env.VERCEL_URL}`
-    : "http://localhost:3000";
+  ? `https://${process.env.VERCEL_URL}`
+  : "http://localhost:3000";
 
 export const metadata = {
-    metadataBase: new URL(defaultUrl),
-    title: "Dr. Saddy Silva",
-    description: "Dr. Saddy Silva, portal de pacientes",
+  metadataBase: new URL(defaultUrl),
+  title: "Dr. Saddy Silva",
+  description: "Dr. Saddy Silva, portal de pacientes",
 };
 
 const geistSans = Geist({
-    display: "swap",
-    subsets: ["latin"],
+  display: "swap",
+  subsets: ["latin"],
 });
 
 export default function RootLayout({
-    children,
+  children,
 }: Readonly<{
-    children: React.ReactNode;
+  children: React.ReactNode;
 }>) {
-    return (
-        <html lang="es" className={geistSans.className} suppressHydrationWarning>
-            <body className="bg-background text-foreground">
-                <ThemeProvider
-                    attribute="class"
-                    defaultTheme="system"
-                    enableSystem
-                    disableTransitionOnChange>
-                    <main className="min-h-screen flex flex-col items-center">
-                        <div className="flex-1 w-full flex flex-col gap-20 items-center">
-                            <nav className="w-full flex justify-center border-b border-b-foreground/10 h-16">
-                                <div className="w-full max-w-5xl flex justify-between items-center p-3 px-5 text-sm">
-                                    <div className="flex gap-5 items-center font-semibold">
-                                        <Link href={"/"}>Dr. Saddy Silva</Link>
-                                    </div>
-                                    <HeaderAuth />
-                                </div>
-                            </nav>
-                            <div className="flex-1 flex-col gap-20 w-full p-5">{children}</div>
+  return (
+    <html lang="es" className={geistSans.className} suppressHydrationWarning>
+      <body className="bg-background text-foreground">
+        <ThemeProvider
+          attribute="class"
+          defaultTheme="system"
+          enableSystem
+          disableTransitionOnChange
+        >
+          <main className="h-screen flex flex-col items-center">
+            <div className="flex-1 w-full flex flex-col gap-20 items-center">
+              <nav className="w-full flex justify-center border-b border-b-foreground/10 h-16">
+                <div className="w-full max-w-5xl flex justify-between items-center p-3 px-5 text-sm">
+                  <div className="flex gap-5 items-center font-semibold">
+                    <Link href={"/"}>Dr. Saddy Silva</Link>
+                  </div>
+                  <HeaderAuth />
+                </div>
+              </nav>
+              <div className="flex-1 flex-col gap-20 w-full p-5">
+                {children}
+              </div>
 
-                            <footer className="w-full flex items-center justify-center border-t mx-auto text-center text-xs gap-8 py-16">
-                                <p>Powered by Maombi Lab</p>
-                                <ThemeSwitcher />
-                            </footer>
-                        </div>
-                    </main>
-                </ThemeProvider>
-                <ToastContainer hideProgressBar theme="dark" />
-            </body>
-        </html>
-    );
+              <footer className="w-full flex items-center justify-center border-t mx-auto text-center text-xs gap-8 py-16">
+                <p>Powered by Maombi Lab</p>
+                <ThemeSwitcher />
+              </footer>
+            </div>
+          </main>
+        </ThemeProvider>
+        <ToastContainer hideProgressBar theme="dark" />
+      </body>
+    </html>
+  );
 }

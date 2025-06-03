@@ -1,61 +1,106 @@
-import ReserveForm from "@/components/reserve/ReserveForm";
 import { createClient } from "@/utils/supabase/server";
-import { InfoIcon } from "lucide-react";
 import { redirect } from "next/navigation";
 import { getAppointmentsByUser } from "../services/appointmentService";
+import CompleteInfo from "@/components/patient/CompleteInfo";
+import { Calendar, Hash, User, X } from "lucide-react";
+import Link from "next/link";
+import ReserveForm from "@/components/reserve/ReserveForm";
 
 export default async function ProtectedPage() {
-    const supabase = await createClient();
+  const supabase = await createClient();
 
-    const {
-        data: { user },
-    } = await supabase.auth.getUser();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
 
-    if (!user) {
-        return redirect("/sign-in");
-    }
-    const { data: userData } = await supabase
-        .from("patient")
-        .select("*")
-        .eq("id", user?.id)
-        .single();
+  if (!user) {
+    return redirect("/sign-in");
+  }
 
-    const today = new Date().toISOString().split("T")[0];
-    const appointmentData = await getAppointmentsByUser(user?.id, today);
-    console.log("Protected: ", appointmentData);
+  const { data: userData } = await supabase
+    .from("patient")
+    .select("*")
+    .eq("id", user?.id)
+    .single();
 
-    return (
-        <div className="flex flex-col min-w-64 max-w-64 mx-auto">
-            {(!userData.name || !userData.lastName || !userData.email || !userData.location) && (
-                <div className="bg-accent text-sm p-3 px-5 rounded-md text-foreground flex gap-3 items-center">
-                    <InfoIcon size="16" strokeWidth={2} />
+  const today = new Date().toISOString().split("T")[0];
+  const appointmentData = await getAppointmentsByUser(user?.id, today);
 
-                    <span>Por favor completa tus datos</span>
-                </div>
-            )}
-            {appointmentData.length > 0 ? (
-                <>
-                    <div className="flex flex-col gap-2">
-                        <h2 className="font-bold text-2xl mb-4">Próxima cita</h2>
-                    </div>
-                    {appointmentData.map((appointment, index) => {
-                        return (
-                            <div key={index} className="bg-muted rounded p-5 gap-4 mb-2">
-                                <h2>{appointment.appointment_date.toString()}</h2>
-                                <h3>{appointment.appointment_type.toUpperCase()}</h3>
-                            </div>
-                        );
-                    })}
-                    {/* <AppointmentList appointmentList={appointmentData} /> */}
-                </>
-            ) : (
-                <>
-                    <div className="flex flex-col gap-2">
-                        <h2 className="font-bold text-2xl mb-4">Reserva tu cita</h2>
-                    </div>
-                    <ReserveForm uid={user.id} />
-                </>
-            )}
+  if (
+    !userData?.name ||
+    !userData?.lastName ||
+    !userData?.email ||
+    !userData?.location
+  ) {
+    return <CompleteInfo />;
+  }
+
+  if (appointmentData.length === 0) {
+    return <ReserveForm uid={user?.id} />;
+  }
+
+  // Assuming we're showing the first appointment (modify as needed)
+  const appointment = appointmentData[0];
+
+  // Format the date for display
+  const formattedDate = new Date(
+    appointment.appointment_date,
+  ).toLocaleDateString("es-VE", {
+    month: "long",
+    day: "numeric",
+    year: "numeric",
+  });
+
+  return (
+    <div className="flex flex-col   items-center">
+      <div className="px-4">
+        <h1 className=" text-[22px] font-bold leading-tight tracking-[-0.015em] text-center pb-3 pt-5">
+          Tu cita está reservada
+        </h1>
+        <div className="flex flex-col gap-2  ">
+          <div className="flex items-center gap-4  min-h-[72px] py-2">
+            <div className=" flex items-center justify-center rounded-lg bg-[#f0f2f5] shrink-0 size-12">
+              <Calendar size={24} />
+            </div>
+            <div className="flex flex-col justify-center">
+              <p className=" text-base font-medium leading-normal line-clamp-1">
+                Tipo de cita
+              </p>
+              <p className="text-[#60768a] text-sm font-normal leading-normal line-clamp-2">
+                {appointment.appointment_type.toUpperCase()}
+              </p>
+            </div>
+          </div>
+
+          <div className="flex items-center gap-4 min-h-[72px] py-2">
+            <div className=" flex items-center justify-center rounded-lg bg-[#f0f2f5] shrink-0 size-12">
+              <Calendar size={24} />
+            </div>
+            <div className="flex flex-col justify-center">
+              <p className=" text-base font-medium leading-normal line-clamp-1">
+                Fecha
+              </p>
+              <p className="text-[#60768a] text-sm font-normal leading-normal line-clamp-2">
+                {formattedDate}
+              </p>
+            </div>
+          </div>
+
+          <div className="flex items-center gap-4  min-h-[72px] py-2">
+            <div className=" flex items-center justify-center rounded-lg bg-[#f0f2f5] shrink-0 size-12">
+              <User size={24} />
+            </div>
+            <div className="flex flex-col justify-center">
+              <p className=" text-base font-medium leading-normal line-clamp-1">
+                Patient Type
+              </p>
+              <p className="text-[#60768a] text-sm font-normal leading-normal line-clamp-2">
+                {userData.type}
+              </p>
+            </div>
+          </div>
         </div>
-    );
+      </div>
+    </div>
+  );
 }
