@@ -12,11 +12,7 @@ import {
 } from "@/app/services/patientService";
 import { toast } from "react-toastify";
 
-export default function NewPatientForm({
-  onSuccess,
-}: {
-  onSuccess?: () => void;
-}) {
+export default function NewPatientForm() {
   const router = useRouter();
   const [formData, setFormData] = useState({
     first_name: "",
@@ -76,11 +72,7 @@ export default function NewPatientForm({
         "Paciente registrado exitosamente. Se envió un OTP para verificar el teléfono.",
       );
 
-      if (onSuccess) {
-        onSuccess();
-      } else {
-        router.push("/protected/admin/patients");
-      }
+      router.push("/protected/admin/patients");
     } catch (error: any) {
       toast.error(error.message || "Error al registrar paciente");
       console.error("Error creating patient:", error);
