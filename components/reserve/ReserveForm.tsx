@@ -38,7 +38,7 @@ function ReserveForm({ uid }: Patient) {
     console.log(data);
   };
   return (
-    <>
+    <div className="flex flex-col">
       <h1 className=" text-[22px] font-bold  tracking-[-0.015em] text-center pb-3 pt-5">
         Reserva tu cita, selecciona el día y el tipo
       </h1>
@@ -82,7 +82,7 @@ function ReserveForm({ uid }: Patient) {
           </SubmitButton>
         </div>
       </form>
-    </>
+    </div>
   );
 }
 

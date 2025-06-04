@@ -21,9 +21,9 @@ function AppointmentList({ appointmentList, ...props }: Props) {
   useEffect(() => {
     if (appointmentList) {
       const formattedData = appointmentList.map((appt) => ({
-        title: `${appt.appointment_type} - ${appt.patient.name}`,
+        title: `${appt.appointment_type} - ${appt?.patient?.name}`,
         start: new Date(appt.appointment_date),
-        extendedProps: { patientDocId: appt.patient.docId },
+        extendedProps: { patientDocId: appt?.patient?.docId },
       }));
       setAppointmentData(formattedData);
     }

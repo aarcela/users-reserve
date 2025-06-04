@@ -8,8 +8,8 @@ export default async function AdminPage() {
 
   return (
     <>
-      <div className="flex flex-col gap-2 items-start">
-        <h2 className="font-bold text-2xl mb-4">Calendario de citas</h2>
+      <div className="container flex flex-col gap-2 items-start">
+        <h3 className="font-bold text-2xl mb-4">Calendario de citas</h3>
         <AppointmentList appointmentList={data} />
       </div>
     </>

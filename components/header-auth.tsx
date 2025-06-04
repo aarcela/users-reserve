@@ -67,13 +67,21 @@ export default async function AuthButton() {
         <span> Completa tus datos</span>
       )}
       {user!.user_metadata?.is_admin && (
-        <Button asChild size="sm" variant={"outline"}>
-          <Link href="/protected/admin">Admin</Link>
-        </Button>
+        <>
+          <Button asChild size="sm" variant={"outline"}>
+            <Link href="/protected/admin">Admin</Link>
+          </Button>
+          <Button asChild size="sm" variant={"outline"}>
+            <Link href="/protected/admin/patients">Pacientes</Link>
+          </Button>
+          <Button asChild size="sm" variant={"outline"}>
+            <Link href="/protected/admin/manageAppointments">Crear cita</Link>
+          </Button>
+        </>
       )}
       <form action={signOutAction}>
         <Button type="submit" variant={"outline"}>
-          Sign out
+          Salir
         </Button>
       </form>
     </div>

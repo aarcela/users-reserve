@@ -26,6 +26,9 @@ export default async function ProtectedPage() {
   const today = new Date().toISOString().split("T")[0];
   const appointmentData = await getAppointmentsByUser(user?.id, today);
 
+  if (user!.user_metadata?.is_admin) {
+    return redirect("/protected/admin/");
+  }
   if (
     !userData?.name ||
     !userData?.lastName ||
