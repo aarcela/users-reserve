@@ -9,7 +9,7 @@ export default function Header() {
       </h1>
       <div className="flex flex-col gap-2 items-center w-full">
         <h2>Gestiona tus citas de forma rápida</h2>
-        <Button asChild size="sm" className="w-1/3">
+        <Button asChild size="sm" className="w-2/3 md:w-1/3">
           <Link href="/protected">Agendar cita</Link>
         </Button>
       </div>
