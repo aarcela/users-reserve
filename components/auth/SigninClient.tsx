@@ -10,6 +10,7 @@ import { signInAction } from "@/app/actions";
 function SigninClient() {
   const [codeSent, setCodeSent] = useState(false);
   const [phone, setPhone] = useState<string>("");
+  const [error, setError] = useState("");
 
   const handleSubmit = (phone: string, codeSend: boolean) => {
     setCodeSent(codeSend);
@@ -18,7 +19,21 @@ function SigninClient() {
 
   const handleSignin = async (form: FormData) => {
     form.append("phone", phone);
-    await signInAction(form);
+    try {
+      const signInRedirect = await signInAction(form);
+      if (signInRedirect?.error) {
+        setError("Código incorrecto. Por favor, inténtalo de nuevo.");
+        setTimeout(() => {
+          setError("");
+        }, 5000);
+      }
+    } catch (error) {
+      console.log(error);
+      setError("Por favor, inténtalo de nuevo.");
+      setTimeout(() => {
+        setError("");
+      }, 5000);
+    }
   };
   return (
     <div className="flex flex-col min-w-64 max-w-64 mx-auto">
@@ -37,6 +52,7 @@ function SigninClient() {
           <div className="flex flex-col gap-2 [&>input]:mb-3 mt-8">
             <Label htmlFor="code">Código (SMS enviado al teléfono)</Label>
             <Input name="code" required minLength={6} maxLength={6} />
+            <h3>{error}</h3>
             <SubmitButton formAction={handleSignin} pendingText="Ingresando...">
               Ingresar
             </SubmitButton>

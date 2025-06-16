@@ -1,7 +1,7 @@
 "use server";
 
 import { encodedRedirect } from "@/utils/utils";
-import { createClient } from "@/utils/supabase/server";
+import { createAdminClient, createClient } from "@/utils/supabase/server";
 import { headers } from "next/headers";
 import { redirect } from "next/navigation";
 
@@ -98,7 +98,7 @@ export const signInAction = async (formData: FormData) => {
   });
 
   if (error) {
-    return encodedRedirect("error", "/sign-in", error.message);
+    return { error: error.message };
   }
 
   return redirect("/protected");
@@ -179,4 +179,12 @@ export const signOutAction = async () => {
   const supabase = await createClient();
   await supabase.auth.signOut();
   return redirect("/sign-in");
+};
+
+export const getUserInfoById = async (userId: string) => {
+  const supabase = await createAdminClient();
+  const { data: authUsersData, error: authUsersError } =
+    await supabase.auth.admin.getUserById(userId);
+
+  return authUsersData;
 };

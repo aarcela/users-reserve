@@ -12,6 +12,7 @@ import { useRouter } from "next/navigation";
 
 function ReserveForm({ uid }: Patient) {
   const [selectedDate, setSelectedDate] = useState<Date | null>(new Date());
+  const [isLoading, setIsLoading] = useState(false);
   //  const [formData, setFormData] = useState({
   //      appointmentType: "regular",
   //  });
@@ -19,21 +20,24 @@ function ReserveForm({ uid }: Patient) {
 
   const handleReserve = async (formData: FormData) => {
     const appointment_type = formData.get("appointmentType")?.toString() || "";
+
     const patient_id = uid;
 
     if (!selectedDate) return;
-
+    setIsLoading(true);
     const appointment_date = selectedDate.toISOString().split("T")[0];
-    //   debugger;
     const data = await reserveAppointment(
       patient_id,
       appointment_date,
       appointment_type,
     );
-    if (!data) toast.warn("El día está lleno, elige otra fecha");
-    else {
+    if (!data) {
+      toast.warn("El día está lleno, elige otra fecha");
+      setIsLoading(false);
+    } else {
       toast.success("Se agendó correctamente");
       router.push("/protected");
+      setIsLoading(false);
     }
     console.log(data);
   };
@@ -77,7 +81,11 @@ function ReserveForm({ uid }: Patient) {
             <option value="plasma">Plasma</option>
             <option value="post">Post-operatorio</option>
           </select>
-          <SubmitButton formAction={handleReserve} pendingText="Reservando...">
+          <SubmitButton
+            disabled={isLoading}
+            formAction={handleReserve}
+            pendingText="Reservando..."
+          >
             Reservar
           </SubmitButton>
         </div>

@@ -60,8 +60,8 @@ export default function NewAppointmentPage() {
     <div className="container mx-auto py-8">
       <h1 className="text-2xl font-bold mb-6">Nueva Cita</h1>
 
-      <div className="flex flex-row w-full gap-4">
-        <div className="w-1/2">
+      <div className="flex flex-col lg:flex-row w-full gap-4">
+        <div className="lg:w-1/3">
           <Label htmlFor="patient">Paciente</Label>
           <PatientSelector
             onSelectPatient={setSelectedPatient}

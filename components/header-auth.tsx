@@ -22,7 +22,6 @@ export default async function AuthButton() {
     .eq("id", user?.id)
     .single();
 
-  console.log("Header: ", user);
   if (!hasEnvVars) {
     return (
       <>
@@ -43,7 +42,7 @@ export default async function AuthButton() {
               disabled
               className="opacity-75 cursor-none pointer-events-none"
             >
-              <Link href="/sign-in">Portal Clientes</Link>
+              <Link href="/sign-in">Portal Pacientes</Link>
             </Button>
             {/* <Button
               asChild
@@ -71,12 +70,6 @@ export default async function AuthButton() {
           <Button asChild size="sm" variant={"outline"}>
             <Link href="/protected/admin">Admin</Link>
           </Button>
-          <Button asChild size="sm" variant={"outline"}>
-            <Link href="/protected/admin/patients">Pacientes</Link>
-          </Button>
-          <Button asChild size="sm" variant={"outline"}>
-            <Link href="/protected/admin/manageAppointments">Crear cita</Link>
-          </Button>
         </>
       )}
       <form action={signOutAction}>
@@ -89,7 +82,7 @@ export default async function AuthButton() {
     <>
       <div className="flex gap-2">
         <Button asChild size="sm" variant={"outline"}>
-          <Link href="/sign-in">Portal Clientes</Link>
+          <Link href="/sign-in">Portal Pacientes</Link>
         </Button>
         {/* <Button asChild size="sm" variant={"default"}>
           <Link href="/sign-up">Registrarse</Link>

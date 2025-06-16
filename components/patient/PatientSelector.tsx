@@ -19,43 +19,7 @@ export default function PatientSelector({
   selectedPatient,
 }: PatientSelectorProps) {
   const [searchTerm, setSearchTerm] = useState("");
-  const supabase = createClient();
-
   const { patients, loading } = usePatients();
-
-  //   useEffect(() => {
-  //     const fetchPatients = async () => {
-  //       try {
-  //         setLoading(true);
-  //         const data = await listPatients();
-
-  //         //   if (searchTerm) {
-  //         //     query = query.or(
-  //         //       `first_name.ilike.%${searchTerm}%,last_name.ilike.%${searchTerm}%,doc_id.ilike.%${searchTerm}%`,
-  //         //     );
-  //         //   }
-
-  //         //   const { data, error } = await query;
-
-  //         if (!data) throw Error;
-  //         const patientsWithUid = data.map((patient: any, idx: number) => ({
-  //           uid: patient.uid ?? patient.id ?? String(idx),
-  //           ...patient,
-  //         }));
-  //         setPatients(patientsWithUid);
-  //       } catch (error) {
-  //         console.error("Error fetching patients:", error);
-  //       } finally {
-  //         setLoading(false);
-  //       }
-  //     };
-
-  //     const debounceTimer = setTimeout(() => {
-  //       fetchPatients();
-  //     }, 300);
-
-  //     return () => clearTimeout(debounceTimer);
-  //   }, [searchTerm, supabase]);
 
   const filteredPatients = patients.filter((patient: Patient) => {
     const searchLower = searchTerm.toLowerCase();

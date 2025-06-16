@@ -127,7 +127,7 @@ function Profile({
             type="email"
             name="email"
             id="email"
-            maxLength={20}
+            maxLength={100}
             value={formData.email}
             onChange={(e) =>
               setFormData({ ...formData, email: e.target.value })
